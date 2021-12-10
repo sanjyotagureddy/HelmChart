@@ -7,6 +7,19 @@ node {
     stage('Checkout') {
         checkout scm
     }
+	
+    stage('Build'){
+        sh "mvn clean install"
+    }
+
+    stage("Image Prune"){
+         sh "docker image prune -f"
+    }
+
+    stage('Image Build'){
+        sh "docker build -t $containerName:$tag  -t $containerName --pull --no-cache ."
+        echo "Image build complete"
+    }
 
     stage('Deploy to Kubernetes'){
         withCredentials([usernamePassword(credentialsId: 'dockerHubAccount', usernameVariable: 'dockerUser', passwordVariable: 'dockerPassword')]) {
