@@ -14,6 +14,8 @@ node {
 			sh "kubectl get deployments"
 			sh "helm list"
 		sh "helm upgrade --install ${containerName} ./counterwebapp --set image.name=${dockerHubUser}/${containerName} --set image.tag=${tag} -f counterwebapp/values/dev/values.yaml"
+	    sh "docker push $dockerUser/$containerName:$tag"
+            echo "Image push complete"
         }
     }
 }
